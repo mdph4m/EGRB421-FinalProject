@@ -1,0 +1,53 @@
+## Michelle Pham: EGRB 421 Final Project Code
+## This code file runs in R
+
+## Installing beepr package and importing its content to R
+install.packages("beepr")
+library(beepr)
+setwd("C:/Users/miche/OneDrive/Desktop/VCU Fall 2021/EGRB 421/Final Project")
+
+## Initializing normal ranges for blood pressure parameters (healthy adults)
+norm_systolicbp = 120 #upper range of systolic normal BP
+norm_diastolicbp = 80 #upper range of diastolic normal BP
+elevated_systolicbp = 129 #upper range of systolic elevated BP
+
+hypotension_systolicbp = 90 #upper range of systolic hypotension
+hypotension_diastolicbp = 60 #upper range of diastolic hypotension
+stage1_systolicbp1 = 130 #lower range of systolic stage 1 high BP
+stage1_systolicbp2 = 139 #upper range of systolic stage 1 high BP
+stage1_diastolicbp = 89 #upper range of diastolic stage 1 high BP
+stage2_systolicbp = 140 #lower range of systolic stage 2 high BP
+stage2_diastolicbp = 90 #lower range of diastolic stage 2 high BP
+
+## Reading in Continuous Data of Patient's Blood Pressure
+patientdata = read.table("blood pressure log.csv", header = TRUE, sep = ",") #reads in .csv file for inputted data
+timeLog = patientdata$ï..Time #reads in data under 'ï..Time' column of .csv file
+patient_systolicbp = patientdata$Systolic; #reads in data under 'Systolic' column of .csv file
+patient_diastolicbp = patientdata$Diastolic; #reads in data under 'Diastolic' column of .csv file
+
+## Checking patient's blood pressure
+for (i in timeLog) {
+  if (patient_systolicbp[i] < norm_systolicbp && patient_diastolicbp[i] < norm_diastolicbp) {
+    print("Patient's blood pressure is normal")
+    beep("facebook") #plays "facebook" sound from beepr package for normal BP
+    Sys.sleep(5) #pauses code for 5 seconds
+  } else if ((patient_systolicbp[i] >= norm_systolicbp && patient_systolicbp[i] <= elevated_systolicbp)
+           && patient_diastolicbp[i] <= norm_diastolicbp) {
+    print("ELEVATED BP - does not require medical attention")
+    beep("facebook") #plays "facebook" sound from beepr package for elevated BP
+    Sys.sleep(5) #pauses code for 5 seconds
+  } else if ((patient_systolicbp[i] >= stage1_systolicbp1 && patient_systolicbp[i] <= stage1_systolicbp2)
+           || (patient_diastolicbp >= norm_diastolicbp && patient_diastolicbp <= stage1_diastolicbp)) {
+    print("STAGE 1 HIGH BP - requires some medical attention")
+    beep("ping") #plays "ping" sound from beepr package for Stage 1 High BP
+    Sys.sleep(5) #pauses code for 5 seconds
+  } else if (patient_systolicbp >= stage2_systolicbp || patient_diastolicbp >= stage2_diastolicbp) {
+    print("STAGE 2 HIGH BP - requires IMMEDIATE medical attention!!")
+    beep("sword") #plays "sword" sound from beepr package for Stage 2 High BP
+    Sys.sleep(5) #pauses code for 5 seconds
+  } else if (patient_systolicbp < hypotension_systolicbp || patient_diastolicbp < hypotension_diastolicbp) {
+    print("HYPOTENSION - requires IMMEDIATE medical attention!!")
+    beep("sword") #plays "sword" sound from beepr package for Hypotension
+    Sys.sleep(5) #pauses code for 5 seconds
+  }
+}
